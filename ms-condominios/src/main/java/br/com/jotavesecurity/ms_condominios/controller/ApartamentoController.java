@@ -4,7 +4,6 @@ import br.com.jotavesecurity.ms_condominios.dtos.ApartamentoDTO;
 import br.com.jotavesecurity.ms_condominios.mappers.ApartamentoMapper;
 import br.com.jotavesecurity.ms_condominios.service.ApartamentoService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,5 +41,14 @@ public class ApartamentoController {
 
         return ResponseEntity.ok(reponseDTO);
 
+    }
+
+    @GetMapping({"/{id}"})
+    public ResponseEntity<ApartamentoDTO> buscarPorId(@PathVariable Long id){
+        var apto = service.findById(id);
+
+        var aptoDTO = mapper.toDTO(apto);
+
+        return ResponseEntity.ok(aptoDTO);
     }
 }

@@ -27,10 +27,9 @@ public class ApartamentoService {
     }
 
     public Apartamento findById(Long id){
-        if(!repository.existsById(id)){
-            throw new EntityNotFoundException("Apartamento não encontrado!");
-        }
-        return repository.findById(id).get();
+
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Apartamento não encontrado com o ID: " + id));
     }
 
 }

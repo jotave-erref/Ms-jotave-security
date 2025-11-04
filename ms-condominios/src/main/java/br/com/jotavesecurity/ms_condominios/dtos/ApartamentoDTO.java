@@ -1,6 +1,5 @@
 package br.com.jotavesecurity.ms_condominios.dtos;
 
-import br.com.jotavesecurity.ms_condominios.entities.Apartamento;
 import jakarta.validation.constraints.NotBlank;
 
 public record ApartamentoDTO(
