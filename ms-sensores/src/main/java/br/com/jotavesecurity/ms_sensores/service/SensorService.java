@@ -1,6 +1,8 @@
 package br.com.jotavesecurity.ms_sensores.service;
 
+import br.com.jotavesecurity.ms_sensores.amqp.AlertaProducer;
 import br.com.jotavesecurity.ms_sensores.clients.CondominiosClient;
+import br.com.jotavesecurity.ms_sensores.dtos.AlertaDTO;
 import br.com.jotavesecurity.ms_sensores.dtos.ApartamentoResponseDTO;
 import br.com.jotavesecurity.ms_sensores.dtos.SensorEventDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -15,9 +17,13 @@ public class SensorService {
 
     private final CondominiosClient client;
 
-    public SensorService(CondominiosClient client){
+    private final AlertaProducer alertaProducer;
+
+    public SensorService(CondominiosClient client, AlertaProducer alertaProducer){
         this.client = client;
+        this.alertaProducer = alertaProducer;
     }
+
 
     public void processarEvento(SensorEventDTO evento){
         log.info("Processando evento para o sensor ID: {}", evento.sensorId());
@@ -39,17 +45,22 @@ public class SensorService {
                     (evento.timestamp().getHour() >= 0 && evento.timestamp().getHour() <= 6);
 
             if(isAlerta){
-                System.out.println("ALERTA GERADO!!! " +
-                        "MOVIMENTO SUSPEITO NO APARTAMENTO " + apto.numero() + ", BLOCO " + apto.bloco() +
-                        ", HORÁRIO " + evento.timestamp().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
+                log.warn("ALERTA DETECTADO. Publicando mensagem na fila...");
+
+                // Cria o DTO com os dados para enviar
+                AlertaDTO alertaParaEnviar = new AlertaDTO(evento.sensorId(), apto.numero(), apto.bloco(),
+                        evento.timestamp());
+
+                // Chama o producer para enviar a mensagem
+                alertaProducer.publicarMensagemDeAlerta(alertaParaEnviar);
+
+                log.info("Mensagem de alerta publicada com sucesso!");
             }
 
         } catch (Exception e) {
             log.error("Falha ao processar o evento do sensor. Causa: {}", e.getMessage(), e);
-            // Aqui você poderia relançar a exceção ou tratar de outra forma
             throw new RuntimeException("Erro ao processar timestamp do evento", e);
         }
 
-        System.out.println("Recebido o evento do sensor: " + evento);
     }
 }

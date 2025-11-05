@@ -1,4 +1,11 @@
 package br.com.jotavesecurity.ms_sensores.dtos;
 
-public record AlertaDTO() {
+import java.time.LocalDateTime;
+
+public record AlertaDTO(
+        String sensorId,
+        String apartamento,
+        String bloco,
+        LocalDateTime timestamp
+) {
 }
