@@ -1,4 +1,4 @@
-package br.com.jotavesecurity.ms_condominios.entities;
+package br.com.jotavesecurity.mscondominios.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

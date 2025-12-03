@@ -1,9 +1,9 @@
-package br.com.jotavesecurity.ms_condominios.mappers;
+package br.com.jotavesecurity.mscondominios.mappers;
 
-import br.com.jotavesecurity.ms_condominios.dtos.MoradorRequestDTO;
-import br.com.jotavesecurity.ms_condominios.dtos.MoradorResponseDTO;
-import br.com.jotavesecurity.ms_condominios.entities.Apartamento;
-import br.com.jotavesecurity.ms_condominios.entities.Morador;
+import br.com.jotavesecurity.mscondominios.dtos.MoradorRequestDTO;
+import br.com.jotavesecurity.mscondominios.dtos.MoradorResponseDTO;
+import br.com.jotavesecurity.mscondominios.entities.Apartamento;
+import br.com.jotavesecurity.mscondominios.entities.Morador;
 import org.springframework.stereotype.Component;
 
 @Component

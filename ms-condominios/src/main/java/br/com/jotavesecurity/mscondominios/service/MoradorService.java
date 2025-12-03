@@ -1,8 +1,9 @@
-package br.com.jotavesecurity.ms_condominios.service;
+package br.com.jotavesecurity.mscondominios.service;
 
-import br.com.jotavesecurity.ms_condominios.entities.Morador;
-import br.com.jotavesecurity.ms_condominios.repositories.ApartamentoRepository;
-import br.com.jotavesecurity.ms_condominios.repositories.MoradorRepository;
+import br.com.jotavesecurity.mscondominios.entities.Morador;
+import br.com.jotavesecurity.mscondominios.infra.exceptions.RecursoNaoEncontradoException;
+import br.com.jotavesecurity.mscondominios.repositories.ApartamentoRepository;
+import br.com.jotavesecurity.mscondominios.repositories.MoradorRepository;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,7 +24,7 @@ public class MoradorService {
     public Morador createMorador(Morador morador){
         long apartamentoId = morador.getApartamento().getId();
         var apartamento = apRepository.findById(apartamentoId).
-                orElseThrow(() -> new RuntimeException("Apartamento não encontrado com o id" + apartamentoId));
+                orElseThrow(() -> new RecursoNaoEncontradoException("Apartamento não encontrado com o id" + apartamentoId));
 
         // Se o apartamento foi encontrado, associamos a entidade completa ao morador antes de salvar.
         morador.setApartamento(apartamento);

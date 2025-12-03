@@ -1,8 +1,7 @@
-package br.com.jotavesecurity.ms_condominios.mappers;
+package br.com.jotavesecurity.mscondominios.mappers;
 
-import br.com.jotavesecurity.ms_condominios.dtos.ApartamentoDTO;
-import br.com.jotavesecurity.ms_condominios.entities.Apartamento;
-import org.springframework.beans.factory.annotation.Autowired;
+import br.com.jotavesecurity.mscondominios.dtos.ApartamentoDTO;
+import br.com.jotavesecurity.mscondominios.entities.Apartamento;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

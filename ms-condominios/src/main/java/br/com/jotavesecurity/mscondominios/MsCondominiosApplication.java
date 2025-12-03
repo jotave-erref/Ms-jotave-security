@@ -1,4 +1,4 @@
-package br.com.jotavesecurity.ms_condominios;
+package br.com.jotavesecurity.mscondominios;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

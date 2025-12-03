@@ -1,4 +1,4 @@
-package br.com.jotavesecurity.ms_condominios;
+package br.com.jotavesecurity.mscondominios;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

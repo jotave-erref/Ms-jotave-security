@@ -1,4 +1,4 @@
-package br.com.jotavesecurity.ms_condominios.dtos;
+package br.com.jotavesecurity.mscondominios.dtos;
 
 public record MoradorResponseDTO(
 

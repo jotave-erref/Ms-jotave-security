@@ -1,9 +1,9 @@
-package br.com.jotavesecurity.ms_condominios.controller;
+package br.com.jotavesecurity.mscondominios.controller;
 
-import br.com.jotavesecurity.ms_condominios.dtos.MoradorRequestDTO;
-import br.com.jotavesecurity.ms_condominios.dtos.MoradorResponseDTO;
-import br.com.jotavesecurity.ms_condominios.mappers.MoradorMapper;
-import br.com.jotavesecurity.ms_condominios.service.MoradorService;
+import br.com.jotavesecurity.mscondominios.dtos.MoradorRequestDTO;
+import br.com.jotavesecurity.mscondominios.dtos.MoradorResponseDTO;
+import br.com.jotavesecurity.mscondominios.mappers.MoradorMapper;
+import br.com.jotavesecurity.mscondominios.service.MoradorService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
