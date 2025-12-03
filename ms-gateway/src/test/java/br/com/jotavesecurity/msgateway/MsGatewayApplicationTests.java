@@ -1,4 +1,4 @@
-package br.com.jotavesecurity.ms_gateway;
+package br.com.jotavesecurity.msgateway;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

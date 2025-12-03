@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>br.com.jotavesecurity</groupId>
-	<artifactId>ms-gateway</artifactId>
+	<artifactId>msgateway</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>ms-gateway</name>
 	<description>Gateway</description>

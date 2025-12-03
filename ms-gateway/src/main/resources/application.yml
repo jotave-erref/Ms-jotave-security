@@ -1,0 +1,58 @@
+server:
+  port: 8080 # O Gateway sempre roda na porta 8080 por convenção
+
+spring:
+  application:
+    name: ms-gateway
+
+  cloud:
+    gateway:
+      # Desativando a descoberta de rotas automatica para controle e segurança total
+      discovery:
+        locator:
+          enabled: false
+
+      # Aqui definimos as rotas manualmente
+      routes:
+        # ROTA 1: CONDOMINIOS
+        - id: ms-condominios
+          # URI: Para onde eu mando a requisição?
+          # lb:// significa "Load Balancer" (Balanceamento de Carga).
+          # O Gateway vai no Eureka, pega a lista de IPs do 'ms-condominios'
+          # e escolhe um deles. Se tiver 3 instâncias, ele distribui o tráfego.
+          uri: lb://ms-condominios
+          # Predicates: "SE a URL for assim..."
+          predicates:
+            - Path=/condominios/**
+          # Filters: "Antes de mandar, faça isso..."
+          filters:
+            # StripPrefix=1 remove a primeira parte da URL (/condominios).
+            # Se chega: localhost:8080/condominios/apartamentos
+            # O Gateway remove '/condominios' e manda pro serviço: /apartamentos
+            - StripPrefix=1
+
+        # ROTA 2: SENSORES
+        - id: ms-sensores
+          uri: lb://ms-sensores
+          predicates:
+            - Path=/sensores/**
+          filters:
+            - StripPrefix=1
+
+eureka:
+  client:
+    service-url:
+      # Variável de ambiente EUREKA_URI.
+      # Se não existir (na sua máquina), usa localhost.
+      # Se existir (no Docker), usa o valor dela.
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka/}
+    fetch-registry: true
+    register-with-eureka: true
+  instance:
+    prefer-ip-address: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
