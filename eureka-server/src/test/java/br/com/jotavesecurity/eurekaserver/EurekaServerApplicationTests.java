@@ -1,4 +1,4 @@
-package br.com.jotavesecurity.eureka_server;
+package br.com.jotavesecurity.eurekaserver;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

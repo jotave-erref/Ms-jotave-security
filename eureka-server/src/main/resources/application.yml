@@ -1,0 +1,28 @@
+server:
+  port: 8761
+
+spring:
+  application:
+    name: eureka-server
+  # Desativa logs desnecessários de template que poluem o console
+  freemarker:
+    template-loader-path: classpath:/templates/
+    prefer-file-system-access: false
+
+eureka:
+  client:
+    # SERVIDOR não precisa se registrar nele mesmo
+    register-with-eureka: false
+    fetch-registry: false
+
+  server:
+    # IMPORTANTE: Em produção (true), o Eureka espera 90s para remover serviços mortos.
+    # Em desenvolvimento (false), queremos que ele remova rápido para testarmos mudanças.
+    enable-self-preservation: false
+    wait-time-in-ms-when-sync-empty: 0
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus # Expõe endpoints de saúde
