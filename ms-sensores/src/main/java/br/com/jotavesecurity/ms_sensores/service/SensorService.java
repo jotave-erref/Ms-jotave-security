@@ -24,7 +24,6 @@ public class SensorService {
         this.alertaProducer = alertaProducer;
     }
 
-
     public void processarEvento(SensorEventDTO evento){
         log.info("Processando evento para o sensor ID: {}", evento.sensorId());
         log.debug("Detalhes completos do evento: {}", evento);
