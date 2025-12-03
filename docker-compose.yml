@@ -1,0 +1,127 @@
+services:
+  # ==========================================
+  # INFRAESTRUTURA (Banco de Dados e Mensageria)
+  # ==========================================
+
+  postgres-infra:
+    image: postgres:15-alpine
+    container_name: postgres-container
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      # O Postgres cria um banco default, mas vamos criar os nossos via script
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # AQUI ESTÁ O TRUQUE: Mapeamos nosso script para a pasta de inicialização do Postgres
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - rede-jotave
+
+  rabbitmq-infra:
+    image: rabbitmq:3.13-management-alpine
+    container_name: rabbitmq-container
+    ports:
+      - "5672:5672" # Porta de comunicação (Java usa essa)
+      - "15672:15672" # Painel visual (Acesse no navegador)
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    networks:
+      - rede-jotave
+
+  # ==========================================
+  # DISCOVERY SERVICE (Deve subir antes dos apps)
+  # ==========================================
+
+  eureka-server:
+    build: ./eureka-server # Procura a pasta eureka-server na raiz
+    container_name: eureka-server-container
+    ports:
+      - "8761:8761"
+    networks:
+      - rede-jotave
+    healthcheck: # Boa prática: Avise quando estiver pronto
+      test: ["CMD", "wget", "-qO-", "http://localhost:8761/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ==========================================
+  # MICROSSERVIÇOS DE NEGÓCIO
+  # ==========================================
+
+  ms-gateway:
+    build: ./ms-gateway
+    container_name: ms-gateway-container
+    ports:
+      - "8080:8080"
+    environment:
+      - EUREKA_URI=http://eureka-server-container:8761/eureka/
+    depends_on:
+      eureka-server:
+        condition: service_healthy # Só inicia quando o Eureka estiver saudável
+    networks:
+      - rede-jotave
+
+  ms-condominios:
+    build: ./ms-condominios
+    container_name: ms-condominios-container
+    # Não precisamos expor porta (ports) se só o Gateway acessar.
+    # Mas para debug local, vamos deixar.
+    ports:
+      - "8082:8082"
+    environment:
+      - DB_HOST=postgres-container # Nome do serviço definido acima
+      - DB_NAME=condominiosdb      # Criado pelo init.sql
+      - DB_USER=postgres
+      - DB_PASS=postgres
+      - EUREKA_URI=http://eureka-server-container:8761/eureka/
+    depends_on:
+      - postgres-infra
+      - eureka-server
+    networks:
+      - rede-jotave
+
+  ms-sensores:
+    build: ./ms-sensores
+    container_name: ms-sensores-container
+    ports:
+      - "8083:8083"
+    environment:
+      - RABBITMQ_HOST=rabbitmq-container # Nome do serviço definido acima
+      - RABBITMQ_PORT=5672
+      - EUREKA_URI=http://eureka-server-container:8761/eureka/
+    depends_on:
+      - rabbitmq-infra
+      - eureka-server
+    networks:
+      - rede-jotave
+
+  ms-alertas:
+    build: ./ms-alertas
+    container_name: ms-alertas-container
+    ports:
+      - "8084:8084"
+    environment:
+      - DB_HOST=postgres-container
+      - DB_NAME=alertasdb # Criado pelo init.sql
+      - DB_USER=postgres
+      - DB_PASS=postgres
+      - RABBITMQ_HOST=rabbitmq-container
+      - EUREKA_URI=http://eureka-server-container:8761/eureka/
+    depends_on:
+      - postgres-infra
+      - rabbitmq-infra
+      - eureka-server
+    networks:
+      - rede-jotave
+
+# Definição de volumes persistentes e rede
+volumes:
+  postgres_data:
+
+networks:
+  rede-jotave:
+    driver: bridge
