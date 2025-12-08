@@ -1,4 +1,4 @@
-package br.com.jotavesecurity.ms_alertas.config;
+package br.com.jotavesecurity.msalertas.config;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
@@ -6,6 +6,7 @@ import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,24 +14,27 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMQConfig {
 
     // 1. Nome da Fila
-    public static final String QUEUE_ALERTAS = "alertas.v1.gerar-alerta";
+    @Value("${app.rabbitmq.queue}")
+    public String queueName;
 
     // 2. Nome da Exchange
-    public static final String EXCHANGE_ALERTAS = "alertas.v1.events";
+    @Value("${app.rabbitmq.exchange}")
+    public String exchangeName;
 
     // 3. Nome da Routing Key (Chave de Roteamento)
-    public static final String ROUTING_KEY_GERAR_ALERTA = "gerar-alerta";
+    @Value("${app.rabbitmq.routing-key}")
+    public String routingKey;
 
     // 4. Criação da Fila (Queue)
     @Bean
     public Queue queue(){
-        return new Queue(QUEUE_ALERTAS, true);
+        return new Queue(queueName, true);
     }
 
     // 5. Criação da Exchange
     @Bean
     public DirectExchange exchange() {
-        return new DirectExchange(EXCHANGE_ALERTAS);
+        return new DirectExchange(exchangeName);
     }
 
     // 6. Criação do Binding (a ligação entre a Exchange e a Fila)
@@ -39,7 +43,7 @@ public class RabbitMQConfig {
         return BindingBuilder
                 .bind(queue()) // Liga a fila que criamos
                 .to(exchange()) // com a exchange que criamos
-                .with(ROUTING_KEY_GERAR_ALERTA); // usando esta chave de roteamento
+                .with(routingKey); // usando esta chave de roteamento
     }
 
     @Bean

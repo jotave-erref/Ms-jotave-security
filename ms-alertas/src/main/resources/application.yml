@@ -1,0 +1,46 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: ms-alertas
+
+  # Conexão com RabbitMQ
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:guest}
+    password: ${RABBITMQ_PASS:guest}
+
+  # Conexão com Banco de Dados (AlertasDB)
+  datasource:
+    # Note que aqui usa as mesmas variáveis de HOST/USER, mas o DB_NAME será 'alertasdb'
+    # (definido no docker-compose)
+    url: jdbc:postgresql://${DB_HOST:localhost}:5432/${DB_NAME:alertasdb}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASS:postgres}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  flyway:
+    enable: true
+    baseline-on-migrate: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka/}
+
+# Nome da fila para o Listener ler
+app:
+  rabbitmq:
+    queue: "alertas.v1.gerar-alerta"
+    exchange: "alertas.v1.events"
+    routing-key: "gerar-alerta"

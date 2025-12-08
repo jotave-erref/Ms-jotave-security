@@ -1,4 +1,4 @@
-package br.com.jotavesecurity.ms_alertas;
+package br.com.jotavesecurity.msalertas;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

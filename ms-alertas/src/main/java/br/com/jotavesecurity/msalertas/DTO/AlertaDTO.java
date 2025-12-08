@@ -1,4 +1,4 @@
-package br.com.jotavesecurity.ms_alertas.DTO;
+package br.com.jotavesecurity.msalertas.DTO;
 
 import java.time.LocalDateTime;
 

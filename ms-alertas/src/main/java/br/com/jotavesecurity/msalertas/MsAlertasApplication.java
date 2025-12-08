@@ -1,4 +1,4 @@
-package br.com.jotavesecurity.ms_alertas;
+package br.com.jotavesecurity.msalertas;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
