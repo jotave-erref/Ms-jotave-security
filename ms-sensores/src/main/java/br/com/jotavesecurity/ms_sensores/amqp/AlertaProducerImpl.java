@@ -1,20 +1,22 @@
 package br.com.jotavesecurity.ms_sensores.amqp;
 
 import br.com.jotavesecurity.ms_sensores.dtos.AlertaDTO;
-import com.netflix.discovery.converters.Auto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class AlertaProducerImpl implements AlertaProducer{
 
-    @Autowired
-    public RabbitTemplate rabbitTemplate;
+    public final RabbitTemplate rabbitTemplate;
 
-    public static final String EXCHANGE_ALERTAS = "alertas.v1.events";
+    @Value("${app.rabbitmq.exchange}")
+    public String exchange;
 
-    public static final String ROUTING_KEY_GERAR_ALERTA = "gerar-alerta";
+    @Value("${app.rabbitmq.routing-key}")
+    public String routingKey;
 
 
     @Override
@@ -24,6 +26,6 @@ public class AlertaProducerImpl implements AlertaProducer{
         // 2. Envia para a exchange especificada.
         // 3. Usa a routing key para que a exchange saiba para qual fila rotear.
 
-        rabbitTemplate.convertAndSend(EXCHANGE_ALERTAS, ROUTING_KEY_GERAR_ALERTA, alertaDTO);
+        rabbitTemplate.convertAndSend(exchange, routingKey, alertaDTO);
     }
 }

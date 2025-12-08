@@ -5,24 +5,19 @@ import br.com.jotavesecurity.ms_sensores.clients.CondominiosClient;
 import br.com.jotavesecurity.ms_sensores.dtos.AlertaDTO;
 import br.com.jotavesecurity.ms_sensores.dtos.ApartamentoResponseDTO;
 import br.com.jotavesecurity.ms_sensores.dtos.SensorEventDTO;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class SensorService {
 
     private final CondominiosClient client;
 
     private final AlertaProducer alertaProducer;
 
-    public SensorService(CondominiosClient client, AlertaProducer alertaProducer){
-        this.client = client;
-        this.alertaProducer = alertaProducer;
-    }
 
     public void processarEvento(SensorEventDTO evento){
         log.info("Processando evento para o sensor ID: {}", evento.sensorId());
@@ -35,9 +30,9 @@ public class SensorService {
             Long aptoId = Long.parseLong(numeroApto);
 
             // 2. Usa o Feign Client para buscar os dados do apartamento no ms-condominos.
-            System.out.println("Buscando dados do apartamento com ID: " + aptoId);
+            log.info("Buscando dados do apartamento com ID: {}", aptoId);   
             ApartamentoResponseDTO apto = client.buscarPorId(aptoId);
-            System.out.println("Dados recebidos do ms-condominios: " + apto);
+            log.info("Dados recebidos do ms-condominios: {}", apto);
 
             // Regra de negócio caso o alarme for acionado entre as 00 hrs e 6hrs
             boolean isAlerta = "ABERTO".equalsIgnoreCase(evento.status()) &&
